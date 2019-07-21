@@ -46,6 +46,17 @@ public class UserController {
     return userService.signin(username, password);
   }
 
+  @PostMapping("/signin/with/phone")
+  @ApiOperation(value = "${UserController.signWithPhoneCode}")
+  @ApiResponses(value = {//
+          @ApiResponse(code = 400, message = "Something went wrong"), //
+          @ApiResponse(code = 422, message = "Invalid verifyCode supplied")})
+  public String loginWithPhoneCode(//
+                      @ApiParam("phone") @RequestParam String phone, //
+                      @ApiParam("verifyCode") @RequestParam String verifyCode) {
+    return userService.loginWithPhoneCode(phone, phone);
+  }
+
   @PostMapping("/signup")
   @ApiOperation(value = "${UserController.signup}")
   @ApiResponses(value = {//

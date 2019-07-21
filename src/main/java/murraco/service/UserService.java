@@ -69,4 +69,12 @@ public class UserService {
     return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
   }
 
+  public String loginWithPhoneCode(String phone, String phone1) {
+    User user =userRepository.findByPhone(phone);
+    if (user==null){
+      throw new CustomException("your phone isn't register yet", HttpStatus.NOT_FOUND);
+    }
+
+    return null; //TODO手机号，验证码
+  }
 }
