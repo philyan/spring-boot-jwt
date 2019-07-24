@@ -2,9 +2,12 @@ package murraco.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.models.auth.In;
+import murraco.model.LoginType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,24 +40,34 @@ public class UserController {
 
   @PostMapping("/signin")
   @ApiOperation(value = "${UserController.signin}")
-  @ApiResponses(value = {//
-      @ApiResponse(code = 400, message = "Something went wrong"), //
-      @ApiResponse(code = 422, message = "Invalid username/password supplied")})
-  public String login(//
-      @ApiParam("Username") @RequestParam String username, //
-      @ApiParam("Password") @RequestParam String password) {
-    return userService.signin(username, password);
-  }
-
-  @PostMapping("/signin/with/phone")
-  @ApiOperation(value = "${UserController.signWithPhoneCode}")
-  @ApiResponses(value = {//
-          @ApiResponse(code = 400, message = "Something went wrong"), //
-          @ApiResponse(code = 422, message = "Invalid verifyCode supplied")})
-  public String loginWithPhoneCode(//
-                      @ApiParam("phone") @RequestParam String phone, //
-                      @ApiParam("verifyCode") @RequestParam String verifyCode) {
-    return userService.loginWithPhoneCode(phone, phone);
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Something went wrong"), //
+                        @ApiResponse(code = 422, message = "Invalid username/password supplied")})
+  public String login(
+      @ApiParam("login_type") @RequestParam Integer login_type, //
+      @ApiParam("username") @RequestParam(required = false) String username, //
+      @ApiParam("password") @RequestParam(required = false)  String password,
+      @ApiParam("phone") @RequestParam(required = false)  String phone, //
+      @ApiParam("code") @RequestParam(required = false)  String code,
+      @ApiParam("open_account_type") @RequestParam(required = false) Integer open_account_type,
+      @ApiParam("open_id") @RequestParam(required = false)  String open_id) {
+      if (login_type.equals(LoginType.OPEN_ACCOUNT)){ //openid登录
+        if (open_account_type==null || StringUtils.isEmpty(open_id)){
+           return "error";
+        }
+        return userService.signinWithOpenAccount(open_account_type, open_id);
+      }else if (login_type.equals(LoginType.USERNAME_PASSWD)){ //用户名密码登录
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+          return "error";
+        }
+        return userService.signinWithUserNameAndPassword(username, password);
+      }else if(login_type.equals(LoginType.PHONE_CODE)){//手机号验证码
+        if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(phone)){
+          return "error";
+        }
+        return userService.signinPhoneAndCode(phone, code);
+      }else{
+        return "error";
+      }
   }
 
   @PostMapping("/signup")

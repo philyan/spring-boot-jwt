@@ -3,6 +3,7 @@ package murraco;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import murraco.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -33,15 +34,14 @@ public class JwtAuthServiceApp implements CommandLineRunner {
 //    admin.setUsername("admin");
 //    admin.setPassword("admin");
 //    admin.setEmail("admin@email.com");
-//    admin.setRoles(new ArrayList<Role>(Arrays.asList(Role.ROLE_ADMIN)));
-//
+//    admin.setRoles(userService.getAdminRoles());
 //    userService.signup(admin);
 //
 //    User client = new User();
 //    client.setUsername("client");
 //    client.setPassword("client");
 //    client.setEmail("client@email.com");
-//    client.setRoles(new ArrayList<Role>(Arrays.asList(Role.ROLE_CLIENT)));
+//    client.setRoles(userService.getClientRoles());
 //
 //    userService.signup(client);
   }

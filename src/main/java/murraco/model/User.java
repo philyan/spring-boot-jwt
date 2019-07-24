@@ -17,10 +17,8 @@ public class User {
   @Column(unique = true, nullable = false)
   private String username;
 
-  @Column(unique = true, nullable = false)
   private String email;
 
-  @Column(unique = true, nullable = false)
   private String phone;
 
   @Size(min = 8, message = "Minimum password length: 8 characters")
@@ -43,6 +41,14 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
   public String getEmail() {

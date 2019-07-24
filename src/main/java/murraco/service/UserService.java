@@ -2,6 +2,11 @@ package murraco.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import murraco.model.OpenAccount;
+import murraco.model.OpenAccountType;
+import murraco.model.Role;
+import murraco.repository.OpenAccountRepository;
+import murraco.repository.RoleRepistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +19,8 @@ import murraco.exception.CustomException;
 import murraco.model.User;
 import murraco.repository.UserRepository;
 import murraco.security.JwtTokenProvider;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -30,13 +37,29 @@ public class UserService {
   @Autowired
   private AuthenticationManager authenticationManager;
 
-  public String signin(String username, String password) {
+  @Autowired
+  private RoleRepistory roleRepistory;
+
+  @Autowired
+  private OpenAccountRepository openAccountRepository;
+
+
+  public String signinWithOpenAccount(Integer open_account_type, String open_id) {
+    OpenAccount openAccount = openAccountRepository.findByAccountTypeAndOpenId(open_account_type,open_id);
+    return null; //TODO
+  }
+
+  public String signinWithUserNameAndPassword(String username, String password) {
     try {
       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
       return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
     } catch (AuthenticationException e) {
       throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
     }
+  }
+
+  public String signinPhoneAndCode(String phone, String code) {
+      return null;//TODO
   }
 
   public String signup(User user) {
@@ -77,4 +100,17 @@ public class UserService {
 
     return null; //TODO手机号，验证码
   }
+
+  public List<Role> getAdminRoles() {
+    List<Role> roles = roleRepistory.findByRoleName("admin");
+    return roles;
+  }
+
+  public List<Role> getClientRoles() {
+    List<Role> roles = roleRepistory.findByRoleName("client");
+    return roles;
+  }
+
+
+
 }
