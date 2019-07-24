@@ -50,17 +50,17 @@ public class UserController {
       @ApiParam("code") @RequestParam(required = false)  String code,
       @ApiParam("open_account_type") @RequestParam(required = false) Integer open_account_type,
       @ApiParam("open_id") @RequestParam(required = false)  String open_id) {
-      if (login_type.equals(LoginType.OPEN_ACCOUNT)){ //openid登录
+      if (login_type.equals(LoginType.OPEN_ACCOUNT.getCode())){ //openid登录
         if (open_account_type==null || StringUtils.isEmpty(open_id)){
            return "error";
         }
         return userService.signinWithOpenAccount(open_account_type, open_id);
-      }else if (login_type.equals(LoginType.USERNAME_PASSWD)){ //用户名密码登录
+      }else if (login_type.equals(LoginType.USERNAME_PASSWD.getCode())){ //用户名密码登录
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
           return "error";
         }
         return userService.signinWithUserNameAndPassword(username, password);
-      }else if(login_type.equals(LoginType.PHONE_CODE)){//手机号验证码
+      }else if(login_type.equals(LoginType.PHONE_CODE.getCode())){//手机号验证码
         if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(phone)){
           return "error";
         }
@@ -123,4 +123,9 @@ public class UserController {
     return userService.refresh(req.getRemoteUser());
   }
 
+
+  @GetMapping("/token/validate")
+  public boolean refresh( @ApiParam("token") @RequestParam String token) {
+    return userService.validateToken(token);
+  }
 }

@@ -45,7 +45,7 @@ public class UserService {
 
 
   public String signinWithOpenAccount(Integer open_account_type, String open_id) {
-    OpenAccount openAccount = openAccountRepository.findByAccountTypeAndOpenId(open_account_type,open_id);
+    OpenAccount openAccount = openAccountRepository.findByOpenAccountTypeAndOpenId(open_account_type,open_id);
     return null; //TODO
   }
 
@@ -82,6 +82,10 @@ public class UserService {
       throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
     }
     return user;
+  }
+
+  public boolean validateToken(String token){
+    return jwtTokenProvider.validateToken(token);
   }
 
   public User whoami(HttpServletRequest req) {
